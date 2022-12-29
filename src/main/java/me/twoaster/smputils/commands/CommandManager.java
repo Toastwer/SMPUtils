@@ -1,11 +1,13 @@
 package me.twoaster.smputils.commands;
 
 import me.twoaster.smputils.SMPUtils;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.command.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +60,18 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                     enableSetHome = main.getConfig().getBoolean("enableSetHome");
 
                     main.sendMessage(sender, "§aConfig has been reloaded");
+                } else if (args[0].equalsIgnoreCase("download")) {
+                    final String githubURL = "https://github.com/Toastwer/SMPUtils/releases/latest/download/SMPUtils.jar";
+
+                    try {
+                        URL website = new URL(githubURL);
+                        FileUtils.copyURLToFile(website, new File(main.getDataFolder().getAbsolutePath() + ".jar"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    ConsoleCommandSender console = main.getServer().getConsoleSender();
+                    Bukkit.dispatchCommand(console, "reload confirm");
                 } else {
                     main.sendMessage(sender, "§cInvalid argument");
                 }
@@ -69,7 +83,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         return false;
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("SMPUtils") && args.length == 1)
