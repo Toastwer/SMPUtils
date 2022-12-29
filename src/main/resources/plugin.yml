@@ -1,0 +1,40 @@
+name: SMPUtils
+version: '${project.version}'
+main: me.twoaster.smputils.SMPUtils
+api-version: 1.19
+prefix: SMPUtils
+authors: [ Twoaster ]
+
+commands:
+  sethome:
+    usage: /sethome
+    description: /sethome
+  home:
+    usage: /home
+    description: /home
+
+  tpa:
+    usage: /tpa
+    description: /tpa
+  tpahere:
+    usage: /tpahere
+    description: /tpahere
+  tpah:
+    usage: /tpah
+    description: /tpah
+  tpaaccept:
+    usage: /tpaaccept
+    description: /tpaaccept
+  tpaa:
+    usage: /tpaa
+    description: /tpaa
+  tpadeny:
+    usage: /tpadeny
+    description: /tpadeny
+  tpad:
+    usage: /tpad
+    description: /tpad
+
+  SMPUtils:
+    usage: /SMPUtils
+    description: /SMPUtils
