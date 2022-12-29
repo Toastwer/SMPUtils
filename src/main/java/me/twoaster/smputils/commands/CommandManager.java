@@ -8,7 +8,7 @@ import org.bukkit.command.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,18 +17,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final SMPUtils main;
     private final HomeCommands homeCommands;
     private final TpaCommands tpaCommands;
+    private final PlayTime playTime;
 
     public boolean enableTpa;
     public boolean enableSetHome;
+    public boolean enablePlayTime;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
 
         enableTpa = main.getConfig().getBoolean("enableTpa");
         enableSetHome = main.getConfig().getBoolean("enableSetHome");
+        enablePlayTime = main.getConfig().getBoolean("enablePlayTime");
 
         homeCommands = new HomeCommands(main, this);
         tpaCommands = new TpaCommands(main, this);
+        playTime = new PlayTime(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -40,6 +44,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         Objects.requireNonNull(main.getCommand("home")).setExecutor(homeCommands);
         Objects.requireNonNull(main.getCommand("sethome")).setExecutor(homeCommands);
+
+        Objects.requireNonNull(main.getCommand("playtime")).setExecutor(playTime);
 
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
     }
@@ -83,12 +89,16 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         return false;
     }
-    
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("SMPUtils") && args.length == 1)
-            return Collections.singletonList("reload");
+            return Arrays.asList("reload", "download");
 
         return null;
+    }
+
+    public PlayTime getPlayTime() {
+        return playTime;
     }
 }

@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -17,23 +18,39 @@ import java.nio.file.Paths;
 
 public final class SMPUtils extends JavaPlugin {
 
-    private EventListener eventListener;
+    // TODO:
+    // - setspawn
+    // - invsee
+    // - msg
+    //   - r
+
+    public EventListener eventListener;
+    public CommandManager commandManager;
 
     @Override
     public void onEnable() {
-        eventListener = new EventListener();
+        eventListener = new EventListener(this);
         getServer().getPluginManager().registerEvents(eventListener, this);
 
         saveResource("config.yml", false);
         saveResource("home.yml", false);
+        saveResource("playtime.yml", false);
 
-        new CommandManager(this);
+        commandManager = new CommandManager(this);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            commandManager.getPlayTime().startSession(player.getUniqueId());
+        }
 
         Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] >> §aSMPUtils has successfully started");
     }
 
     @Override
     public void onDisable() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            commandManager.getPlayTime().endSession(player.getUniqueId());
+        }
+
         Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] >> §cSMPUtils has been disabled");
     }
 

@@ -11,10 +11,17 @@ import org.bukkit.event.server.ServerListPingEvent;
 
 public class EventListener implements Listener {
 
+    private final SMPUtils main;
+
+    public EventListener(SMPUtils main) {
+        this.main = main;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        main.commandManager.getPlayTime().startSession(event.getPlayer().getUniqueId());
         event.setJoinMessage("§8[§2+§8] §f" + player.getDisplayName());
     }
 
@@ -22,6 +29,7 @@ public class EventListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
+        main.commandManager.getPlayTime().endSession(event.getPlayer().getUniqueId());
         event.setQuitMessage("§8[§4-§8] §f" + player.getDisplayName());
     }
 

@@ -1,6 +1,7 @@
 package me.twoaster.smputils.commands;
 
 import me.twoaster.smputils.SMPUtils;
+import me.twoaster.smputils.utils.Converter;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -17,7 +18,6 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +53,7 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Map<String, String> homes = getHomes();
+            Map<String, String> homes = Converter.stringListToMap(config.getStringList("home"));
 
             if (!homes.containsKey(player.getUniqueId().toString())) {
                 main.sendMessage(sender, "§cYou currently have no home set");
@@ -93,7 +93,7 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Map<String, String> homes = getHomes();
+            Map<String, String> homes = Converter.stringListToMap(config.getStringList("home"));
 
             String world = location.getWorld() == null ? "world" : location.getWorld().getName();
 
@@ -102,7 +102,7 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
 
             homes.put(player.getUniqueId().toString(), locationString);
 
-            saveHomes(homes);
+            config.set("home", Converter.mapToStringList(homes));
             saveConfig();
 
             main.sendMessage(sender, "§aYou new home has been set!");
@@ -125,33 +125,6 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
             return new ArrayList<>();
 
         return null;
-    }
-
-    private Map<String, String> getHomes() {
-        List<String> homeList = (List<String>) config.get("home");
-
-        if (homeList == null)
-            return new HashMap<>();
-
-        Map<String, String> homes = new HashMap<>();
-
-        for (String home : homeList) {
-            String[] parts = home.split(";");
-
-            homes.put(parts[0], parts[1]);
-        }
-
-        return homes;
-    }
-
-    private void saveHomes(Map<String, String> homes) {
-        List<String> homeList = new ArrayList<>();
-
-        for (Map.Entry<String, String> home : homes.entrySet()) {
-            homeList.add(home.getKey() + ";" + home.getValue());
-        }
-
-        config.set("home", homeList);
     }
 
     private void reloadConfig() {

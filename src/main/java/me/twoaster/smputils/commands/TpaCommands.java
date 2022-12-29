@@ -95,6 +95,7 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
 
                     main.sendMessage(target, new TextComponent("§fThe player §6" + player.getName() + "§f has requested to teleport to your location "),
                             accept, new TextComponent(" "), deny);
+                    target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
 
                     for (Request request : tpaRequests) {
                         if (request.sender.getName().equalsIgnoreCase(player.getName())) {
@@ -133,6 +134,7 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
 
                     main.sendMessage(target, new TextComponent("§fThe player §6" + player.getName() + "§f wants to teleport you to their location "),
                             accept, new TextComponent(" "), deny);
+                    target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
 
                     for (Request request : tpaRequests) {
                         if (request.sender.getName().equalsIgnoreCase(player.getName())) {
