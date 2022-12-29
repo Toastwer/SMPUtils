@@ -18,21 +18,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final HomeCommands homeCommands;
     private final TpaCommands tpaCommands;
     private final PlayTime playTime;
+    private final MessageCommands messageCommands;
 
     public boolean enableTpa;
     public boolean enableSetHome;
     public boolean enablePlayTime;
+    public boolean enableMessaging;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
 
-        enableTpa = main.getConfig().getBoolean("enableTpa");
-        enableSetHome = main.getConfig().getBoolean("enableSetHome");
-        enablePlayTime = main.getConfig().getBoolean("enablePlayTime");
+        loadConfig();
 
         homeCommands = new HomeCommands(main, this);
         tpaCommands = new TpaCommands(main, this);
         playTime = new PlayTime(main, this);
+        messageCommands = new MessageCommands(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -47,7 +48,19 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         Objects.requireNonNull(main.getCommand("playtime")).setExecutor(playTime);
 
+        Objects.requireNonNull(main.getCommand("message")).setExecutor(messageCommands);
+        Objects.requireNonNull(main.getCommand("msg")).setExecutor(messageCommands);
+        Objects.requireNonNull(main.getCommand("reply")).setExecutor(messageCommands);
+        Objects.requireNonNull(main.getCommand("r")).setExecutor(messageCommands);
+
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
+    }
+
+    private void loadConfig() {
+        enableTpa = main.getConfig().getBoolean("enableTpa");
+        enableSetHome = main.getConfig().getBoolean("enableSetHome");
+        enablePlayTime = main.getConfig().getBoolean("enablePlayTime");
+        enableMessaging = main.getConfig().getBoolean("enableMessaging");
     }
 
     @Override
@@ -62,8 +75,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 if (args[0].equalsIgnoreCase("reload")) {
                     main.reloadConfig();
 
-                    enableTpa = main.getConfig().getBoolean("enableTpa");
-                    enableSetHome = main.getConfig().getBoolean("enableSetHome");
+                    loadConfig();
 
                     main.sendMessage(sender, "§aConfig has been reloaded");
                 } else if (args[0].equalsIgnoreCase("download")) {
@@ -84,10 +96,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             } else {
                 main.sendMessage(sender, "§cInvalid command, expected an argument");
             }
-            return true;
         }
 
-        return false;
+        return true;
     }
 
     @Override

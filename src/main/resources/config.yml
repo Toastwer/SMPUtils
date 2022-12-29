@@ -1,3 +1,4 @@
 enableTpa: false
 enableSetHome: false
 enablePlayTime: false
+enableMessaging: false

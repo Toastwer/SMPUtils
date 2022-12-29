@@ -85,8 +85,6 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
 
                 timeLeft--;
             }, 0, 5);
-
-            return true;
         } else if (label.equals("sethome")) {
             if (!commandManager.enableSetHome) {
                 main.sendMessage(sender, "§c/home and /sethome are currently disabled");
@@ -106,10 +104,9 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
             saveConfig();
 
             main.sendMessage(sender, "§aYou new home has been set!");
-            return true;
         }
 
-        return false;
+        return true;
     }
 
     private boolean locationsEqual(Player player, Location original) {

@@ -114,7 +114,6 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
             } else {
                 main.sendMessage(player, "§cExpected a player to send the request to");
             }
-            return true;
         } else if (label.equalsIgnoreCase("tpahere") || label.equalsIgnoreCase("tpah")) {
             if (args.length > 0) {
                 Player target = Bukkit.getPlayer(args[0]);
@@ -153,7 +152,6 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
             } else {
                 main.sendMessage(player, "§cExpected a player to send the request to");
             }
-            return true;
         } else if (label.equalsIgnoreCase("tpaaccept") || label.equalsIgnoreCase("tpaa")) {
             if (args.length > 0) {
                 Player target = Bukkit.getPlayer(args[0]);
@@ -179,7 +177,6 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
 
                 main.sendMessage(player, "§eYou currently do not have any tpa requests");
             }
-            return true;
         } else if (label.equalsIgnoreCase("tpadeny") || label.equalsIgnoreCase("tpad")) {
             if (args.length > 0) {
                 Player target = Bukkit.getPlayer(args[0]);
@@ -205,10 +202,9 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
 
                 main.sendMessage(player, "§eYou currently do not have any tpa requests");
             }
-            return true;
         }
 
-        return false;
+        return true;
     }
 
     private void acceptRequest(Request request) {

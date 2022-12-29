@@ -23,6 +23,7 @@ public final class SMPUtils extends JavaPlugin {
     // - invsee
     // - msg
     //   - r
+    // - sleeping percentage
 
     public EventListener eventListener;
     public CommandManager commandManager;
@@ -42,7 +43,7 @@ public final class SMPUtils extends JavaPlugin {
             commandManager.getPlayTime().startSession(player.getUniqueId());
         }
 
-        Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] >> §aSMPUtils has successfully started");
+        Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] §l>> §aSMPUtils has successfully started");
     }
 
     @Override
@@ -51,16 +52,16 @@ public final class SMPUtils extends JavaPlugin {
             commandManager.getPlayTime().endSession(player.getUniqueId());
         }
 
-        Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] >> §cSMPUtils has been disabled");
+        Bukkit.getConsoleSender().sendMessage("§8[§bSMPUtils§8] §l>> §cSMPUtils has been disabled");
     }
 
     public void sendMessage(CommandSender sender, String message) {
-        sender.sendMessage("§8[§bSMPUtils§8] >>§7 " + message);
+        sender.sendMessage("§8[§bSMPUtils§8] §l>>§7 " + message);
     }
 
     public void sendMessage(CommandSender sender, BaseComponent... message) {
         BaseComponent[] arr = new BaseComponent[message.length + 1];
-        arr[0] = new TextComponent("§8[§bSMPUtils§8] >>§7 ");
+        arr[0] = new TextComponent("§8[§bSMPUtils§8] §l>>§7 ");
         System.arraycopy(message, 0, arr, 1, message.length);
         sender.spigot().sendMessage(arr);
     }

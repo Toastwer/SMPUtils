@@ -31,3 +31,12 @@ commands:
 
   playtime:
     usage: /playtime
+
+  message:
+    usage: /message
+  msg:
+    usage: /msg
+  reply:
+    usage: /reply
+  r:
+    usage: /r

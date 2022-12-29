@@ -102,11 +102,9 @@ public class PlayTime implements CommandExecutor, TabCompleter {
 
                 main.sendMessage(player, "§fYour playtime so far is: §6" + TimeUnit.MILLISECONDS.toHours(time) + "§f hours");
             }
-
-            return true;
         }
 
-        return false;
+        return true;
     }
 
     @Override
