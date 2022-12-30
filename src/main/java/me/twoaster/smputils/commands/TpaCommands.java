@@ -1,5 +1,6 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -13,6 +14,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+
+import static me.twoaster.smputils.SMPUtils.getOnlinePlayersExcept;
 
 public class TpaCommands implements CommandExecutor, TabCompleter {
 
@@ -243,13 +246,6 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
         if (args.length > 1)
             return new ArrayList<>();
 
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-
-        List<String> response = new ArrayList<>();
-        for (Player player : players)
-            if (!player.getName().equalsIgnoreCase(sender.getName()))
-                response.add(player.getName());
-
-        return response;
+        return getOnlinePlayersExcept(sender.getName());
     }
 }

@@ -1,5 +1,6 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import me.twoaster.smputils.utils.Converter;
 import net.md_5.bungee.api.ChatMessageType;

@@ -49,3 +49,6 @@ commands:
     usage: /inventory
   invsee:
     usage: /invsee
+
+  rank:
+    usage: /rank

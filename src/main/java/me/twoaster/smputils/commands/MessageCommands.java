@@ -1,5 +1,6 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static me.twoaster.smputils.SMPUtils.DELIM;
+import static me.twoaster.smputils.SMPUtils.getOnlinePlayersExcept;
 
 public class MessageCommands implements CommandExecutor, TabCompleter {
 
@@ -47,11 +54,7 @@ public class MessageCommands implements CommandExecutor, TabCompleter {
                         message.append(" ").append(args[i]);
                     }
 
-                    String colored = ChatColor.translateAlternateColorCodes('&', message.toString());
-                    sender.sendMessage("§dTo §f" + target.getName() + " §8§l>> §f" + colored);
-                    target.sendMessage("§dFrom §f" + sender.getName() + " §8§l>> §f" + colored);
-
-                    lastMessage.put(target.getName(), sender);
+                    sendMessage(message.toString(), sender, target);
                 } else {
                     main.sendMessage(sender, "§cThe player §o" + args[0] + "§c is not online");
                 }
@@ -73,11 +76,7 @@ public class MessageCommands implements CommandExecutor, TabCompleter {
                     message.append(" ").append(args[i]);
                 }
 
-                String colored = ChatColor.translateAlternateColorCodes('&', message.toString());
-                sender.sendMessage("§dTo §f" + target.getName() + " §8§l>> §f" + colored);
-                target.sendMessage("§dFrom §f" + sender.getName() + " §8§l>> §f" + colored);
-
-                lastMessage.put(target.getName(), sender);
+                sendMessage(message.toString(), sender, target);
             } else {
                 main.sendMessage(sender, "§eThere is no message to reply to");
             }
@@ -86,17 +85,18 @@ public class MessageCommands implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private void sendMessage(String message, CommandSender sender, CommandSender receiver) {
+        String colored = ChatColor.translateAlternateColorCodes('&', message);
+        sender.sendMessage("§dTo §f" + receiver.getName() + DELIM + "§f" + colored);
+        receiver.sendMessage("§dFrom §f" + sender.getName() + DELIM + "§f" + colored);
+
+        lastMessage.put(receiver.getName(), sender);
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if ((label.equalsIgnoreCase("message") || label.equalsIgnoreCase("msg")) && args.length == 1) {
-            Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-
-            List<String> response = new ArrayList<>();
-            for (Player player : players)
-                if (!player.getName().equalsIgnoreCase(sender.getName()))
-                    response.add(player.getName());
-
-            return response;
+            return getOnlinePlayersExcept(sender.getName());
         }
 
         return new ArrayList<>();

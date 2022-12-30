@@ -1,8 +1,9 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import me.twoaster.smputils.utils.Converter;
-import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static me.twoaster.smputils.SMPUtils.findOfflinePlayer;
+import static me.twoaster.smputils.SMPUtils.getOfflinePlayersExcept;
 
 public class PlayTime implements CommandExecutor, TabCompleter {
 
@@ -44,7 +48,7 @@ public class PlayTime implements CommandExecutor, TabCompleter {
 
         if (label.equalsIgnoreCase("playtime")) {
             if (args.length > 0) {
-                Player target = Bukkit.getPlayer(args[0]);
+                OfflinePlayer target = findOfflinePlayer(args[0]);
                 if (target != null) {
                     long time = 0;
                     if (playTime.containsKey(target.getUniqueId().toString()))
@@ -53,7 +57,7 @@ public class PlayTime implements CommandExecutor, TabCompleter {
                     if (session.containsKey(target.getUniqueId()))
                         time += (new Date().getTime() - session.get(target.getUniqueId()));
 
-                    String type = target.getName().equalsIgnoreCase(sender.getName()) ? "Your" : "Their";
+                    String type = Objects.requireNonNull(target.getName()).equalsIgnoreCase(sender.getName()) ? "Your" : "Their";
                     if (args.length > 1) {
                         switch (args[1]) {
                             case "days":
@@ -111,14 +115,7 @@ public class PlayTime implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("playtime")) {
             if (args.length == 1) {
-                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-
-                List<String> response = new ArrayList<>();
-                for (Player player : players)
-                    if (!player.getName().equalsIgnoreCase(sender.getName()))
-                        response.add(player.getName());
-
-                return response;
+                return getOfflinePlayersExcept(sender.getName());
             } else if (args.length == 2) {
                 return Arrays.asList("days", "d", "hours", "h", "minutes", "m", "seconds", "s", "milliseconds", "ms");
             }
@@ -153,7 +150,7 @@ public class PlayTime implements CommandExecutor, TabCompleter {
     private void saveConfig() {
         if (!(new File(main.getDataFolder(), "playtime.yml").exists())) {
             try {
-                if(!new File(main.getDataFolder(), "playtime.yml").createNewFile())
+                if (!new File(main.getDataFolder(), "playtime.yml").createNewFile())
                     main.getServer().getLogger().warning("Something went wrong while creating the 'playtime.yml' file");
             } catch (IOException exception) {
                 exception.printStackTrace();

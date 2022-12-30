@@ -1,5 +1,6 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,8 +10,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import static me.twoaster.smputils.SMPUtils.getOnlinePlayersExcept;
 
 public class InvSee implements CommandExecutor, TabCompleter {
 
@@ -67,14 +69,7 @@ public class InvSee implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-
-            List<String> response = new ArrayList<>();
-            for (Player player : players)
-                if (!player.getName().equalsIgnoreCase(sender.getName()))
-                    response.add(player.getName());
-
-            return response;
+            return getOnlinePlayersExcept(sender.getName());
         }
 
         return new ArrayList<>();

@@ -1,5 +1,6 @@
 package me.twoaster.smputils.commands;
 
+import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

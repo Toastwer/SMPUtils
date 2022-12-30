@@ -1,0 +1,9 @@
+ranks:
+  default:
+    prefix: ""
+    suffix: ""
+    nameColor: "&f"
+    textColor: "&7"
+
+
+players:

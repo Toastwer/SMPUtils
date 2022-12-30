@@ -1,6 +1,7 @@
-package me.twoaster.smputils.commands;
+package me.twoaster.smputils;
 
-import me.twoaster.smputils.SMPUtils;
+import me.twoaster.smputils.commands.*;
+import me.twoaster.smputils.commands.rank.RankCommand;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
@@ -21,6 +22,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final MessageCommands messageCommands;
     private final SetSpawn setSpawn;
     private final InvSee invSee;
+    private final RankCommand rankCommand;
 
     public boolean enableTpa;
     public boolean enableSetHome;
@@ -40,6 +42,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         messageCommands = new MessageCommands(main, this);
         setSpawn = new SetSpawn(main, this);
         invSee = new InvSee(main, this);
+        rankCommand = new RankCommand(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -63,6 +66,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         Objects.requireNonNull(main.getCommand("inventory")).setExecutor(invSee);
         Objects.requireNonNull(main.getCommand("invsee")).setExecutor(invSee);
+
+        Objects.requireNonNull(main.getCommand("rank")).setExecutor(rankCommand);
 
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
     }
@@ -98,6 +103,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("reload")) {
                     loadConfig();
+
+                    main.rankManager.reloadConfig();
+                    main.rankManager.loadRanks();
+                    main.rankManager.loadPlayers();
 
                     main.sendMessage(sender, "§aConfig has been reloaded");
                 } else if (args[0].equalsIgnoreCase("download")) {
