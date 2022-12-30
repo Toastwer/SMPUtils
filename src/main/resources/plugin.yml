@@ -43,3 +43,9 @@ commands:
 
   setspawn:
     usage: /setspawn
+
+
+  inventory:
+    usage: /inventory
+  invsee:
+    usage: /invsee

@@ -20,12 +20,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final PlayTime playTime;
     private final MessageCommands messageCommands;
     private final SetSpawn setSpawn;
+    private final InvSee invSee;
 
     public boolean enableTpa;
     public boolean enableSetHome;
     public boolean enablePlayTime;
     public boolean enableMessaging;
     public boolean enableSetSpawn;
+    public boolean enableInvSee;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
@@ -37,6 +39,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         playTime = new PlayTime(main, this);
         messageCommands = new MessageCommands(main, this);
         setSpawn = new SetSpawn(main, this);
+        invSee = new InvSee(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -58,6 +61,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         Objects.requireNonNull(main.getCommand("setspawn")).setExecutor(setSpawn);
 
+        Objects.requireNonNull(main.getCommand("inventory")).setExecutor(invSee);
+        Objects.requireNonNull(main.getCommand("invsee")).setExecutor(invSee);
+
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
     }
 
@@ -69,6 +75,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         enablePlayTime = getConfigSetting("enablePlayTime");
         enableMessaging = getConfigSetting("enableMessaging");
         enableSetSpawn = getConfigSetting("enableSetSpawn");
+        enableInvSee = getConfigSetting("enableInvSee");
     }
 
     private boolean getConfigSetting(String setting) {

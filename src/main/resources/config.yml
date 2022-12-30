@@ -3,3 +3,4 @@ enableSetHome: false
 enablePlayTime: false
 enableMessaging: false
 enableSetSpawn: false
+enableInvSee: false

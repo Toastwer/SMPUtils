@@ -110,13 +110,21 @@ public class PlayTime implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("playtime")) {
-            if (args.length == 1)
-                return Arrays.asList("days", "d", "hours", "h", "minutes", "m", "seconds", "s", "milliseconds", "ms");
+            if (args.length == 1) {
+                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
-            return new ArrayList<>();
+                List<String> response = new ArrayList<>();
+                for (Player player : players)
+                    if (!player.getName().equalsIgnoreCase(sender.getName()))
+                        response.add(player.getName());
+
+                return response;
+            } else if (args.length == 2) {
+                return Arrays.asList("days", "d", "hours", "h", "minutes", "m", "seconds", "s", "milliseconds", "ms");
+            }
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     public void startSession(UUID uuid) {
