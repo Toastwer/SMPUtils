@@ -19,11 +19,13 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final TpaCommands tpaCommands;
     private final PlayTime playTime;
     private final MessageCommands messageCommands;
+    private final SetSpawn setSpawn;
 
     public boolean enableTpa;
     public boolean enableSetHome;
     public boolean enablePlayTime;
     public boolean enableMessaging;
+    public boolean enableSetSpawn;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
@@ -34,6 +36,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         tpaCommands = new TpaCommands(main, this);
         playTime = new PlayTime(main, this);
         messageCommands = new MessageCommands(main, this);
+        setSpawn = new SetSpawn(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -53,14 +56,28 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         Objects.requireNonNull(main.getCommand("reply")).setExecutor(messageCommands);
         Objects.requireNonNull(main.getCommand("r")).setExecutor(messageCommands);
 
+        Objects.requireNonNull(main.getCommand("setspawn")).setExecutor(setSpawn);
+
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
     }
 
     private void loadConfig() {
-        enableTpa = main.getConfig().getBoolean("enableTpa");
-        enableSetHome = main.getConfig().getBoolean("enableSetHome");
-        enablePlayTime = main.getConfig().getBoolean("enablePlayTime");
-        enableMessaging = main.getConfig().getBoolean("enableMessaging");
+        main.reloadConfig();
+
+        enableTpa = getConfigSetting("enableTpa");
+        enableSetHome = getConfigSetting("enableSetHome");
+        enablePlayTime = getConfigSetting("enablePlayTime");
+        enableMessaging = getConfigSetting("enableMessaging");
+        enableSetSpawn = getConfigSetting("enableSetSpawn");
+    }
+
+    private boolean getConfigSetting(String setting) {
+        if (main.getConfig().contains(setting, true))
+            return main.getConfig().getBoolean(setting);
+
+        main.getConfig().set(setting, false);
+        main.saveConfig();
+        return false;
     }
 
     @Override
@@ -73,8 +90,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("reload")) {
-                    main.reloadConfig();
-
                     loadConfig();
 
                     main.sendMessage(sender, "§aConfig has been reloaded");

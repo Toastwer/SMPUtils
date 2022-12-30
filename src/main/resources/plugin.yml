@@ -40,3 +40,6 @@ commands:
     usage: /reply
   r:
     usage: /r
+
+  setspawn:
+    usage: /setspawn

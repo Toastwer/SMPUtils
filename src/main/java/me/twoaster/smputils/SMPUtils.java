@@ -19,10 +19,7 @@ import java.nio.file.Paths;
 public final class SMPUtils extends JavaPlugin {
 
     // TODO:
-    // - setspawn
     // - invsee
-    // - msg
-    //   - r
     // - sleeping percentage
 
     public EventListener eventListener;
