@@ -4,7 +4,7 @@ import me.twoaster.smputils.RankManager;
 import me.twoaster.smputils.SMPUtils;
 import org.bukkit.command.CommandSender;
 
-public class CreateRankCommand extends ArgumentHandler {
+public class CreateRankCommand extends RankArgumentHandler {
     public CreateRankCommand(SMPUtils main, RankManager rankManager) {
         super(main, rankManager);
     }

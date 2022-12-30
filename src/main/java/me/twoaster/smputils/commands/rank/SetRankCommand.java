@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SetRankCommand extends ArgumentHandler {
+public class SetRankCommand extends RankArgumentHandler {
     public SetRankCommand(SMPUtils main, RankManager rankManager) {
         super(main, rankManager);
     }

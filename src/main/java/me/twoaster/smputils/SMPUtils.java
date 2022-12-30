@@ -22,9 +22,6 @@ import java.util.List;
 
 public final class SMPUtils extends JavaPlugin {
 
-    // TODO:
-    // - sleeping percentage
-
     public static final String PREFIX = "§8[§bSMPUtils§8]";
     public static final String DELIM = " §8§l>> §f";
 

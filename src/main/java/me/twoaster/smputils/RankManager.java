@@ -191,10 +191,24 @@ public class RankManager {
         return rank.prefix.isEmpty() ? "" : rank.prefix + " ";
     }
 
+    public void setPrefix(String rank, String newPrefix) {
+        Rank edited = ranks.get(rank);
+        edited.prefix = newPrefix.replace('&', '§');
+        ranks.put(rank, edited);
+        saveRanks();
+    }
+
     public String getSuffix(UUID uuid) {
         Rank rank = playerRanks.containsKey(uuid) ? ranks.get(playerRanks.get(uuid)) : ranks.get("default");
 
         return rank.suffix.isEmpty() ? "" : " " + rank.suffix;
+    }
+
+    public void setSuffix(String rank, String newSuffix) {
+        Rank edited = ranks.get(rank);
+        edited.suffix = newSuffix.replace('&', '§');
+        ranks.put(rank, edited);
+        saveRanks();
     }
 
     public String getNameColor(UUID uuid) {
@@ -203,10 +217,24 @@ public class RankManager {
         return rank.nameColor;
     }
 
+    public void setNameColor(String rank, String newNameColor) {
+        Rank edited = ranks.get(rank);
+        edited.nameColor = newNameColor.replace('&', '§');
+        ranks.put(rank, edited);
+        saveRanks();
+    }
+
     public String getChatColor(UUID uuid) {
         Rank rank = playerRanks.containsKey(uuid) ? ranks.get(playerRanks.get(uuid)) : ranks.get("default");
 
         return rank.chatColor;
+    }
+
+    public void setChatColor(String rank, String newChatColor) {
+        Rank edited = ranks.get(rank);
+        edited.chatColor = newChatColor.replace('&', '§');
+        ranks.put(rank, edited);
+        saveRanks();
     }
 
     private boolean validRankColor(String color) {

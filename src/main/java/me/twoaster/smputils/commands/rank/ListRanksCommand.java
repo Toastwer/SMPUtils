@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Collection;
 
-public class ListRanksCommand extends ArgumentHandler {
+public class ListRanksCommand extends RankArgumentHandler {
     public ListRanksCommand(SMPUtils main, RankManager rankManager) {
         super(main, rankManager);
     }

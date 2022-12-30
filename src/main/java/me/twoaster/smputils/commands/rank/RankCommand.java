@@ -16,7 +16,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
     private final CommandManager commandManager;
     private final RankManager rankManager;
 
-    private final Map<String, ArgumentHandler> handlers;
+    private final Map<String, RankArgumentHandler> handlers;
 
     public RankCommand(SMPUtils main, CommandManager commandManager) {
         this.main = main;
@@ -29,6 +29,10 @@ public class RankCommand implements CommandExecutor, TabCompleter {
         handlers.put("delete", new DeleteRankCommand(main, rankManager));
         handlers.put("list", new ListRanksCommand(main, rankManager));
         handlers.put("set", new SetRankCommand(main, rankManager));
+        handlers.put("prefix", new RankPrefixCommand(main, rankManager));
+        handlers.put("suffix", new RankSuffixCommand(main, rankManager));
+        handlers.put("namecolor", new RankNameColorCommand(main, rankManager));
+        handlers.put("chatcolor", new RankChatColorCommand(main, rankManager));
     }
 
     @Override
@@ -44,7 +48,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            main.sendMessage(sender, "§8---------------< §3Rank Usage §8>---------------" +
+            main.sendMessage(sender, "\n§8---------------< §3Rank Usage §8>---------------" +
                                      "\n§7- §b/rank create §e<rankname>" +
                                      "\n§7- §b/rank delete §e<rankname>" +
                                      "\n§7- §b/rank list" +
@@ -70,7 +74,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1)
             return Arrays.asList("create", "delete", "list", "set", "prefix", "suffix", "namecolor", "chatcolor");
-        else if (args.length > 1)
+        else if (args.length > 1 && handlers.containsKey(args[0].toLowerCase()))
             return handlers.get(args[0].toLowerCase()).handleTab(sender, label, args);
 
         return new ArrayList<>();

@@ -4,7 +4,7 @@ import me.twoaster.smputils.RankManager;
 import me.twoaster.smputils.SMPUtils;
 import org.bukkit.command.CommandSender;
 
-public class DeleteRankCommand extends ArgumentHandler {
+public class DeleteRankCommand extends RankArgumentHandler {
     public DeleteRankCommand(SMPUtils main, RankManager rankManager) {
         super(main, rankManager);
     }

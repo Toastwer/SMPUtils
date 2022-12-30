@@ -7,12 +7,12 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ArgumentHandler {
+public abstract class RankArgumentHandler {
 
     protected final SMPUtils main;
     protected final RankManager rankManager;
 
-    public ArgumentHandler(SMPUtils main, RankManager rankManager) {
+    public RankArgumentHandler(SMPUtils main, RankManager rankManager) {
         this.main = main;
         this.rankManager = rankManager;
     }

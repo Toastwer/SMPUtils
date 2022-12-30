@@ -11,6 +11,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import java.util.Set;
+
 import static me.twoaster.smputils.SMPUtils.DELIM;
 
 public class EventListener implements Listener {
@@ -28,7 +30,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
 
         main.commandManager.getPlayTime().startSession(event.getPlayer().getUniqueId());
-        event.setJoinMessage("§8[§2+§8] §f" + rankManager.getPrefix(player.getUniqueId()) + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + rankManager.getSuffix(player.getUniqueId()));
+        event.setJoinMessage("§8[§2+§8] §f" + rankManager.getPrefix(player.getUniqueId()) + "§f" + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + "§f" + rankManager.getSuffix(player.getUniqueId()));
     }
 
     @EventHandler
@@ -36,7 +38,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
 
         main.commandManager.getPlayTime().endSession(event.getPlayer().getUniqueId());
-        event.setQuitMessage("§8[§4-§8] §f" + rankManager.getPrefix(player.getUniqueId()) + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + rankManager.getSuffix(player.getUniqueId()));
+        event.setQuitMessage("§8[§4-§8] §f" + rankManager.getPrefix(player.getUniqueId()) + "§f" + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + "§f" + rankManager.getSuffix(player.getUniqueId()));
     }
 
     @EventHandler
@@ -49,12 +51,21 @@ public class EventListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        event.setFormat(rankManager.getPrefix(player.getUniqueId()) +
-                        rankManager.getNameColor(player.getUniqueId()) +
-                        event.getPlayer().getDisplayName() +
-                        rankManager.getSuffix(player.getUniqueId()) + DELIM + "§f" +
-                        rankManager.getChatColor(player.getUniqueId()) +
-                        ChatColor.translateAlternateColorCodes('&', event.getMessage()));
+        String message = rankManager.getPrefix(player.getUniqueId()) + "§f" +
+                         rankManager.getNameColor(player.getUniqueId()) +
+                         event.getPlayer().getDisplayName() + "§f" +
+                         rankManager.getSuffix(player.getUniqueId()) + DELIM + "§7" +
+                         rankManager.getChatColor(player.getUniqueId()) +
+                         ChatColor.translateAlternateColorCodes('&', event.getMessage());
+
+        event.setCancelled(true);
+
+        Set<Player> recipients = event.getRecipients();
+        for (Player recipient : recipients) {
+            recipient.sendMessage(message);
+        }
+
+        Bukkit.getConsoleSender().sendMessage(message);
     }
 
     @EventHandler
