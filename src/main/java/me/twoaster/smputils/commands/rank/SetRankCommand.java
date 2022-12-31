@@ -5,7 +5,6 @@ import me.twoaster.smputils.SMPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +30,7 @@ public class SetRankCommand extends RankArgumentHandler {
         OfflinePlayer[] players = Bukkit.getOfflinePlayers();
         for (OfflinePlayer player : players) {
             if (player.getName() != null && player.getName().equals(args[1])) {
-                rankManager.setRank(((Player) sender).getUniqueId(), args[2]);
+                rankManager.setRank(player.getUniqueId(), args[2]);
                 main.sendMessage(sender, "§aThe rank of §o" + args[1] + "§a has been set to §o" + args[2]);
                 return;
             }
