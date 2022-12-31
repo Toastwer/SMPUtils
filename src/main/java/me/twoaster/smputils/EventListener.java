@@ -29,6 +29,7 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        main.scoreboardManager.setTab();
         main.commandManager.getPlayTime().startSession(event.getPlayer().getUniqueId());
         event.setJoinMessage("§8[§2+§8] §f" + rankManager.getPrefix(player.getUniqueId()) + "§f" + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + "§f" + rankManager.getSuffix(player.getUniqueId()));
     }
@@ -37,6 +38,7 @@ public class EventListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
+        main.scoreboardManager.setTab();
         main.commandManager.getPlayTime().endSession(event.getPlayer().getUniqueId());
         event.setQuitMessage("§8[§4-§8] §f" + rankManager.getPrefix(player.getUniqueId()) + "§f" + rankManager.getNameColor(player.getUniqueId()) + player.getDisplayName() + "§f" + rankManager.getSuffix(player.getUniqueId()));
     }

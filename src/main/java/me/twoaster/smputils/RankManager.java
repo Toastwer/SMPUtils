@@ -126,6 +126,7 @@ public class RankManager {
             config.set("ranks." + rank.name + ".chatColor", rank.chatColor.replace('§', '&'));
         }
 
+        main.scoreboardManager.setTab();
         saveConfig();
     }
 
@@ -156,6 +157,7 @@ public class RankManager {
             config.set("players." + entry.getKey(), entry.getValue());
         }
 
+        main.scoreboardManager.setTab();
         saveConfig();
     }
 

@@ -3,6 +3,7 @@ package me.twoaster.smputils.commands;
 import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import me.twoaster.smputils.utils.Converter;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,7 +18,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static me.twoaster.smputils.SMPUtils.findOfflinePlayer;
-import static me.twoaster.smputils.SMPUtils.getOfflinePlayersExcept;
 
 public class PlayTime implements CommandExecutor, TabCompleter {
 
@@ -115,7 +115,14 @@ public class PlayTime implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (label.equalsIgnoreCase("playtime")) {
             if (args.length == 1) {
-                return getOfflinePlayersExcept(sender.getName());
+                List<String> result = new ArrayList<>();
+
+                OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+                for (OfflinePlayer player : players)
+                    if (player.getName() != null)
+                        result.add(player.getName());
+
+                return result;
             } else if (args.length == 2) {
                 return Arrays.asList("days", "d", "hours", "h", "minutes", "m", "seconds", "s", "milliseconds", "ms");
             }

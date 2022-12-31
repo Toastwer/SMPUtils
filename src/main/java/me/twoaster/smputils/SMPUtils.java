@@ -30,10 +30,14 @@ public final class SMPUtils extends JavaPlugin {
     public EventListener eventListener;
     public CommandManager commandManager;
     public RankManager rankManager;
+    public ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {
         rankManager = new RankManager(this);
+
+        scoreboardManager = new ScoreboardManager(this, rankManager);
+        scoreboardManager.setTab();
 
         eventListener = new EventListener(this, rankManager);
         getServer().getPluginManager().registerEvents(eventListener, this);
