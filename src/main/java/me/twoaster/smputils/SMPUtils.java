@@ -1,6 +1,7 @@
 package me.twoaster.smputils;
 
 import me.twoaster.smputils.utils.ColoredLogger;
+import me.twoaster.smputils.utils.TPSUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public final class SMPUtils extends JavaPlugin {
     public CommandManager commandManager;
     public RankManager rankManager;
     public ScoreboardManager scoreboardManager;
+    private TPSUtil tpsUtil;
 
     @Override
     public void onEnable() {
@@ -52,6 +54,43 @@ public final class SMPUtils extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             commandManager.getPlayTime().startSession(player.getUniqueId());
         }
+
+        tpsUtil = new TPSUtil();
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            String tpsColor;
+            String msptColor;
+
+            double[] tps = tpsUtil.getTPS();
+            if (tps[0] < 17) {
+                tpsColor = "§4";
+            } else if (tps[0] < 18) {
+                tpsColor = "§c";
+            } else if (tps[0] < 19) {
+                tpsColor = "§e";
+            } else if (tps[0] < 19.8) {
+                tpsColor = "§a";
+            } else {
+                tpsColor = "§2";
+            }
+
+            double tickTime = tpsUtil.averageTickTime();
+            if (tickTime <= 10) {
+                msptColor = "§2";
+            } else if (tickTime <= 20) {
+                msptColor = "§a";
+            } else if (tickTime <= 30) {
+                msptColor = "§e";
+            } else if (tickTime <= 40) {
+                msptColor = "§c";
+            } else {
+                msptColor = "§4";
+            }
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.setPlayerListFooter("§7TPS: " + tpsColor + TPSUtil.format(tps[0]) + "     §7MSPT: " + msptColor + TPSUtil.format(tickTime));
+            }
+        }, 0, 10);
 
         Bukkit.getConsoleSender().sendMessage(PREFIX + DELIM + "§aSMPUtils has successfully started");
     }

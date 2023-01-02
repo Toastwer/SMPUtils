@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -81,6 +82,14 @@ public class EventListener implements Listener {
                 player.sendMessage(message);
 
             Bukkit.getConsoleSender().sendMessage(message);
+        }
+    }
+
+    @EventHandler
+    public void onSignChange(SignChangeEvent event) {
+        String[] lines = event.getLines();
+        for (int i = 0; i < lines.length; i++) {
+            event.setLine(i, ChatColor.translateAlternateColorCodes('&', lines[i]));
         }
     }
 }
