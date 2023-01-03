@@ -23,6 +23,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final SetSpawn setSpawn;
     private final InvSee invSee;
     private final RankCommand rankCommand;
+    private final SeeAdvancementsCommand seeAdvancementsCommand;
 
     public boolean enableTpa;
     public boolean enableSetHome;
@@ -43,6 +44,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         setSpawn = new SetSpawn(main, this);
         invSee = new InvSee(main, this);
         rankCommand = new RankCommand(main, this);
+        seeAdvancementsCommand = new SeeAdvancementsCommand(main, this);
 
         Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
         Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
@@ -68,6 +70,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         Objects.requireNonNull(main.getCommand("invsee")).setExecutor(invSee);
 
         Objects.requireNonNull(main.getCommand("rank")).setExecutor(rankCommand);
+
+        Objects.requireNonNull(main.getCommand("seeAdvancements")).setExecutor(seeAdvancementsCommand);
 
         Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
     }

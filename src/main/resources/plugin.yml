@@ -52,3 +52,6 @@ commands:
 
   rank:
     usage: /rank
+
+  seeAdvancements:
+    usage: /seeAdvancements
