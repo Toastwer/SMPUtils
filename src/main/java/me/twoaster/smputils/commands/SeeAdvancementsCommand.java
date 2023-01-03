@@ -59,34 +59,30 @@ public class SeeAdvancementsCommand implements CommandExecutor, TabCompleter {
             for (int i = 0; i < parts.length - 2; i++) {
                 path.append(parts[i]).append("/");
             }
-            path.append("world/advancements/").append(target.getUniqueId()).append(".json");
+            path.append(main.getServer().getWorlds().get(0).getName()).append("/advancements/").append(target.getUniqueId()).append(".json");
 
-            main.logger.info(Path.of(String.valueOf(path)));
             jsonString = Files.readString(Path.of(path.toString()));
         } catch (IOException ignored) {
-        }
-
-        if (jsonString == null) {
-
-            return true;
         }
 
         Set<String> completedKeys = new HashSet<>();
         Set<String> unCompletedKeys = new HashSet<>();
 
-        JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
+        if (jsonString != null) {
+            JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
 
-        for (String key : json.keySet()) {
-            if (!json.get(key).isJsonObject()) {
-                continue;
-            }
+            for (String key : json.keySet()) {
+                if (!json.get(key).isJsonObject()) {
+                    continue;
+                }
 
-            JsonObject advancement = json.getAsJsonObject(key);
+                JsonObject advancement = json.getAsJsonObject(key);
 
-            if (advancement.get("done").getAsBoolean()) {
-                completedKeys.add(key);
-            } else {
-                unCompletedKeys.add(key);
+                if (advancement.get("done").getAsBoolean()) {
+                    completedKeys.add(key);
+                } else {
+                    unCompletedKeys.add(key);
+                }
             }
         }
 
