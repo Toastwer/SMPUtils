@@ -36,7 +36,7 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
         reloadConfig();
     }
 
-    private int timeLeft = 3;
+    private int timeLeft;
     private BukkitTask task;
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -80,8 +80,9 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
                     player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.5f, 1);
                     task.cancel();
                 } else if (timeLeft % 3 == 0) {
+                    int secondsLeft = timeLeft / 3;
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            TextComponent.fromLegacyText("§fStand still for §6" + timeLeft / 3 + " §fmore seconds to teleport"));
+                            TextComponent.fromLegacyText("§fStand still for §6" + secondsLeft + "§f more second" + (secondsLeft == 1 ? "" : "s") + " to teleport"));
                 }
 
                 timeLeft--;

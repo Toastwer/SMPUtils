@@ -67,6 +67,7 @@ public class SeeAdvancementsCommand implements CommandExecutor, TabCompleter {
 
         Set<String> completedKeys = new HashSet<>();
         Set<String> unCompletedKeys = new HashSet<>();
+        Map<String, Integer> unCompleteStatus = new HashMap<>();
 
         if (jsonString != null) {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
@@ -82,6 +83,7 @@ public class SeeAdvancementsCommand implements CommandExecutor, TabCompleter {
                     completedKeys.add(key);
                 } else {
                     unCompletedKeys.add(key);
+                    unCompleteStatus.put(key, advancement.get("criteria").getAsJsonObject().size());
                 }
             }
         }
@@ -116,7 +118,7 @@ public class SeeAdvancementsCommand implements CommandExecutor, TabCompleter {
 
         out.append("§8--- §b").append(target.getName()).append(" has ").append(unCompleted.size()).append(" uncompleted advancement").append(unCompleted.size() == 1 ? "" : "s").append(" §8---§r\n");
         for (Advancement advancement : unCompleted) {
-            out.append("§7- ").append(Objects.requireNonNull(advancement.getDisplay()).isHidden() ? "§e§o" : "§e").append(advancement.getDisplay().getTitle()).append("§r\n");
+            out.append("§7- ").append(Objects.requireNonNull(advancement.getDisplay()).isHidden() ? "§e§o" : "§e").append(advancement.getDisplay().getTitle()).append(" §7(").append(unCompleteStatus.get(advancement.getKey().toString())).append("/").append(advancement.getCriteria().size()).append(")").append("§r\n");
         }
 
         out.append("§8--- §b").append(target.getName()).append(" has ").append(notStarted.size()).append(" unstarted advancement").append(notStarted.size() == 1 ? "" : "s").append(" §8---§r\n");
