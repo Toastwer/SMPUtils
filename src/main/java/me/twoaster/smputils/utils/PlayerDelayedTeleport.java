@@ -21,7 +21,7 @@ public class PlayerDelayedTeleport {
     public void TeleportPlayer(Player player, Location destination, int secondsDelay, Runnable whenComplete) {
         Location originalLocation = player.getLocation();
 
-        timeLeft = secondsDelay * 3;
+        timeLeft = secondsDelay * 4;
         task = Bukkit.getScheduler().runTaskTimer(main, () -> {
             if (!locationsEqual(player, originalLocation)) {
                 main.sendMessage(player, "§cTeleport cancelled; you moved");
@@ -33,8 +33,8 @@ public class PlayerDelayedTeleport {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(" "));
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.5f, 1);
                 task.cancel();
-            } else if (timeLeft % 3 == 0) {
-                int secondsLeft = timeLeft / 3;
+            } else if (timeLeft % 4 == 0) {
+                int secondsLeft = timeLeft / 4;
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                         TextComponent.fromLegacyText("§fStand still for §6" + secondsLeft + "§f more second" + (secondsLeft == 1 ? "" : "s") + " to teleport"));
             }
