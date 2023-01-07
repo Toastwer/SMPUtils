@@ -55,3 +55,8 @@ commands:
 
   seeAdvancements:
     usage: /seeAdvancements
+
+  warp:
+    usage: /warp
+  setwarp:
+    usage: /setwarp

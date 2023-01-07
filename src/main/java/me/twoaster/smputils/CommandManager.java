@@ -8,10 +8,9 @@ import org.bukkit.command.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
@@ -24,6 +23,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final InvSee invSee;
     private final RankCommand rankCommand;
     private final SeeAdvancementsCommand seeAdvancementsCommand;
+    private final WarpCommands warpCommands;
 
     public boolean enableTpa;
     public boolean enableSetHome;
@@ -31,6 +31,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public boolean enableMessaging;
     public boolean enableSetSpawn;
     public boolean enableInvSee;
+    public boolean enableSeeAdvancements;
+    public boolean enableWarp;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
@@ -45,46 +47,63 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         invSee = new InvSee(main, this);
         rankCommand = new RankCommand(main, this);
         seeAdvancementsCommand = new SeeAdvancementsCommand(main, this);
+        warpCommands = new WarpCommands(main, this);
 
-        Objects.requireNonNull(main.getCommand("tpa")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpahere")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpah")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpaaccept")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpaa")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpadeny")).setExecutor(tpaCommands);
-        Objects.requireNonNull(main.getCommand("tpad")).setExecutor(tpaCommands);
+        getCommand("tpa").setExecutor(tpaCommands);
+        getCommand("tpahere").setExecutor(tpaCommands);
+        getCommand("tpah").setExecutor(tpaCommands);
+        getCommand("tpaaccept").setExecutor(tpaCommands);
+        getCommand("tpaa").setExecutor(tpaCommands);
+        getCommand("tpadeny").setExecutor(tpaCommands);
+        getCommand("tpad").setExecutor(tpaCommands);
 
-        Objects.requireNonNull(main.getCommand("home")).setExecutor(homeCommands);
-        Objects.requireNonNull(main.getCommand("sethome")).setExecutor(homeCommands);
+        getCommand("home").setExecutor(homeCommands);
+        getCommand("sethome").setExecutor(homeCommands);
 
-        Objects.requireNonNull(main.getCommand("playtime")).setExecutor(playTime);
+        getCommand("playtime").setExecutor(playTime);
 
-        Objects.requireNonNull(main.getCommand("message")).setExecutor(messageCommands);
-        Objects.requireNonNull(main.getCommand("msg")).setExecutor(messageCommands);
-        Objects.requireNonNull(main.getCommand("reply")).setExecutor(messageCommands);
-        Objects.requireNonNull(main.getCommand("r")).setExecutor(messageCommands);
+        getCommand("message").setExecutor(messageCommands);
+        getCommand("msg").setExecutor(messageCommands);
+        getCommand("reply").setExecutor(messageCommands);
+        getCommand("r").setExecutor(messageCommands);
 
-        Objects.requireNonNull(main.getCommand("setspawn")).setExecutor(setSpawn);
+        getCommand("setspawn").setExecutor(setSpawn);
 
-        Objects.requireNonNull(main.getCommand("inventory")).setExecutor(invSee);
-        Objects.requireNonNull(main.getCommand("invsee")).setExecutor(invSee);
+        getCommand("inventory").setExecutor(invSee);
+        getCommand("invsee").setExecutor(invSee);
 
-        Objects.requireNonNull(main.getCommand("rank")).setExecutor(rankCommand);
+        getCommand("rank").setExecutor(rankCommand);
 
-        Objects.requireNonNull(main.getCommand("seeAdvancements")).setExecutor(seeAdvancementsCommand);
+        getCommand("seeAdvancements").setExecutor(seeAdvancementsCommand);
 
-        Objects.requireNonNull(main.getCommand("SMPUtils")).setExecutor(this);
+        getCommand("warp").setExecutor(warpCommands);
+        getCommand("setwarp").setExecutor(warpCommands);
+
+        getCommand("SMPUtils").setExecutor(this);
+    }
+
+    private PluginCommand getCommand(String name) {
+        PluginCommand command = main.getCommand(name);
+
+        if (command == null || !command.isRegistered()) {
+            throw new RuntimeException("The command '" + name + "' is not registerd");
+        }
+
+        return command;
     }
 
     private void loadConfig() {
         main.reloadConfig();
 
-        enableTpa = getConfigSetting("enableTpa");
-        enableSetHome = getConfigSetting("enableSetHome");
-        enablePlayTime = getConfigSetting("enablePlayTime");
-        enableMessaging = getConfigSetting("enableMessaging");
-        enableSetSpawn = getConfigSetting("enableSetSpawn");
-        enableInvSee = getConfigSetting("enableInvSee");
+        for (Field field : getClass().getDeclaredFields()) {
+            if (field.getName().startsWith("enable")) {
+                try {
+                    field.set(this, getConfigSetting(field.getName()));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     private boolean getConfigSetting(String setting) {
@@ -92,6 +111,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return main.getConfig().getBoolean(setting);
 
         main.getConfig().set(setting, false);
+        main.saveConfig();
+        return false;
+    }
+
+    private boolean setConfigSetting(String setting, boolean value) {
+        main.getConfig().set(setting, value);
         main.saveConfig();
         return false;
     }
@@ -125,6 +150,29 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
                     ConsoleCommandSender console = main.getServer().getConsoleSender();
                     Bukkit.dispatchCommand(console, "reload confirm");
+                } else if (args[0].equalsIgnoreCase("toggleSetting")) {
+                    Map<String, Field> options = new HashMap<>();
+
+                    for (Field field : getClass().getDeclaredFields()) {
+                        if (field.getName().startsWith("enable"))
+                            options.put(field.getName().toLowerCase(), field);
+                    }
+
+                    if (!options.containsKey(args[1].toLowerCase())) {
+                        main.sendMessage(sender, "§cThat setting does not exist");
+                        return true;
+                    }
+
+                    boolean newValue = !getConfigSetting(options.get(args[1].toLowerCase()).getName());
+                    setConfigSetting(options.get(args[1].toLowerCase()).getName(), newValue);
+
+                    try {
+                        options.get(args[1].toLowerCase()).set(this, newValue);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    main.sendMessage(sender, "§fThe setting §6" + options.get(args[1].toLowerCase()).getName() + "§f has been" + (newValue ? "§a enabled" : "§c disabled"));
                 } else {
                     main.sendMessage(sender, "§cInvalid argument");
                 }
@@ -138,10 +186,22 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equalsIgnoreCase("SMPUtils") && args.length == 1)
-            return Arrays.asList("reload", "download");
+        if (label.equalsIgnoreCase("SMPUtils")) {
+            if (args.length == 1) {
+                return Arrays.asList("reload", "download", "toggleSetting");
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("toggleSetting")) {
+                List<String> options = new ArrayList<>();
 
-        return null;
+                for (Field field : getClass().getDeclaredFields()) {
+                    if (field.getName().startsWith("enable"))
+                        options.add(field.getName());
+                }
+
+                return options;
+            }
+        }
+
+        return new ArrayList<>();
     }
 
     public PlayTime getPlayTime() {

@@ -3,11 +3,9 @@ package me.twoaster.smputils.commands;
 import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import me.twoaster.smputils.utils.Converter;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.twoaster.smputils.utils.PlayerDelayedTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -65,28 +63,10 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
             Location home = new Location(Bukkit.getWorld(homeString[0]), Double.parseDouble(homeString[1]), Double.parseDouble(homeString[2]),
                     Double.parseDouble(homeString[3]), Float.parseFloat(homeString[4]), Float.parseFloat(homeString[5]));
 
-            main.sendMessage(sender, "§fStand still for §63 seconds §fto teleport to your home");
+            PlayerDelayedTeleport delayedTeleport = new PlayerDelayedTeleport(main);
 
-            timeLeft = 9;
-            task = Bukkit.getScheduler().runTaskTimer(main, () -> {
-                if (!locationsEqual(player, location)) {
-                    main.sendMessage(player, "§cTeleport cancelled; you moved");
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(" "));
-                    task.cancel();
-                } else if (timeLeft == 0) {
-                    player.teleport(home);
-                    main.sendMessage(player, "§aYou have been sent to your home");
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(" "));
-                    player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.5f, 1);
-                    task.cancel();
-                } else if (timeLeft % 3 == 0) {
-                    int secondsLeft = timeLeft / 3;
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                            TextComponent.fromLegacyText("§fStand still for §6" + secondsLeft + "§f more second" + (secondsLeft == 1 ? "" : "s") + " to teleport"));
-                }
-
-                timeLeft--;
-            }, 0, 5);
+            main.sendMessage(player, "§fStand still for §63 seconds §fto teleport to your home");
+            delayedTeleport.TeleportPlayer(player, home, 3, () -> main.sendMessage(player, "§aYou have been sent to your home"));
         } else if (label.equals("sethome")) {
             if (!commandManager.enableSetHome) {
                 main.sendMessage(sender, "§c/home and /sethome are currently disabled");
@@ -109,13 +89,6 @@ public class HomeCommands implements CommandExecutor, TabCompleter {
         }
 
         return true;
-    }
-
-    private boolean locationsEqual(Player player, Location original) {
-        Location playerLoc = player.getLocation();
-        return playerLoc.getBlockX() == original.getBlockX()
-                && playerLoc.getBlockY() == original.getBlockY()
-                && playerLoc.getBlockZ() == original.getBlockZ();
     }
 
     @Override
