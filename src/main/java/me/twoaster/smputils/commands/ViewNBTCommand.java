@@ -1,5 +1,9 @@
 package me.twoaster.smputils.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import me.twoaster.smputils.CommandManager;
 import me.twoaster.smputils.SMPUtils;
 import me.twoaster.smputils.utils.NBTUtil;
@@ -53,10 +57,22 @@ public class ViewNBTCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        main.sendMessage(sender, "§fThe NBTData of that " + (isItem ? "item" : "block") + " is:");
+        StringBuilder out = new StringBuilder();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        out.append("§fThe NBTData of that ").append(isItem ? "item" : "block").append(" is:");
         for (Map.Entry<String, String> entry : nbt.entrySet()) {
-            main.sendMessage(sender, "§7- §f" + entry.getKey() + "§7: §f" + entry.getValue());
+            if (entry.getValue().startsWith("[") || entry.getValue().startsWith("{")) {
+                JsonElement jsonElement = JsonParser.parseString(entry.getValue());
+
+                out.append("\n§7- §f").append(entry.getKey()).append("§7:\n  §e").append(gson.toJson(jsonElement).replace("\n", "\n  "));
+            } else {
+                out.append("\n§7- §f").append(entry.getKey()).append("§7: §b").append(entry.getValue());
+            }
         }
+
+        main.sendMessage(sender, out.toString());
 
         return true;
     }
