@@ -60,3 +60,6 @@ commands:
     usage: /warp
   setwarp:
     usage: /setwarp
+
+  viewnbt:
+    usage: /viewnbt

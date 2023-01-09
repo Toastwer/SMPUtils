@@ -24,6 +24,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final RankCommand rankCommand;
     private final SeeAdvancementsCommand seeAdvancementsCommand;
     private final WarpCommands warpCommands;
+    private final ViewNBTCommand viewNBTCommand;
 
     public boolean enableTpa;
     public boolean enableSetHome;
@@ -33,6 +34,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public boolean enableInvSee;
     public boolean enableSeeAdvancements;
     public boolean enableWarp;
+    public boolean enableViewNBT;
 
     public CommandManager(SMPUtils main) {
         this.main = main;
@@ -48,6 +50,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         rankCommand = new RankCommand(main, this);
         seeAdvancementsCommand = new SeeAdvancementsCommand(main, this);
         warpCommands = new WarpCommands(main, this);
+        viewNBTCommand = new ViewNBTCommand(main, this);
 
         getCommand("tpa").setExecutor(tpaCommands);
         getCommand("tpahere").setExecutor(tpaCommands);
@@ -78,6 +81,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         getCommand("warp").setExecutor(warpCommands);
         getCommand("setwarp").setExecutor(warpCommands);
+
+        getCommand("viewnbt").setExecutor(viewNBTCommand);
 
         getCommand("SMPUtils").setExecutor(this);
     }
