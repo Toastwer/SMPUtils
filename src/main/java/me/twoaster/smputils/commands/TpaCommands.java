@@ -100,14 +100,8 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
                             accept, new TextComponent(" "), deny);
                     target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
 
-                    for (Request request : tpaRequests) {
-                        if (request.sender.getName().equalsIgnoreCase(player.getName())) {
-                            request.requestTime = new Date().getTime();
-                            main.sendMessage(player, "§fA request has been sent to §6" + target.getName() + "§f, your previous request" +
-                                                     "has been overwritten");
-                            return true;
-                        }
-                    }
+                    if (removeOverlapping(player, target))
+                        return true;
 
                     tpaRequests.add(new Request(player, target, Request.RequestType.TO_RECEIVER, new Date().getTime()));
                     main.sendMessage(player, "§fA request has been sent to §6" + target.getName());
@@ -138,14 +132,8 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
                             accept, new TextComponent(" "), deny);
                     target.playSound(target.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1);
 
-                    for (Request request : tpaRequests) {
-                        if (request.sender.getName().equalsIgnoreCase(player.getName())) {
-                            request.requestTime = new Date().getTime();
-                            main.sendMessage(player, "§fA request has been sent to §6" + target.getName() + "§f, your previous request" +
-                                                     "has been overwritten");
-                            return true;
-                        }
-                    }
+                    if (removeOverlapping(player, target))
+                        return true;
 
                     tpaRequests.add(new Request(player, target, Request.RequestType.TO_SENDER, new Date().getTime()));
                     main.sendMessage(player, "§fA request has been sent to §6" + target.getName());
@@ -208,6 +196,20 @@ public class TpaCommands implements CommandExecutor, TabCompleter {
         }
 
         return true;
+    }
+
+    private boolean removeOverlapping(Player player, Player target) {
+        for (Request request : tpaRequests) {
+            if (request.sender.getName().equalsIgnoreCase(player.getName())) {
+                tpaRequests.remove(request);
+                request.requestTime = new Date().getTime();
+                main.sendMessage(player, "§fA request has been sent to §6" + target.getName() + "§f, your previous request " +
+                                         "has been overwritten");
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void acceptRequest(Request request) {

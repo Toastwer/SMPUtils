@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -48,6 +49,13 @@ public class EventListener implements Listener {
     public void onPing(ServerListPingEvent event) {
         event.setMotd("§7Twoaster's §6SMP §7Server");
         event.setMaxPlayers(-1);
+    }
+
+    @EventHandler
+    public void onInventory(InventoryClickEvent event) {
+        if (event.getView().getTitle().startsWith("Inventory of: ")) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
